@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+This project idea is based off of the board game [Mastermind](https://en.wikipedia.org/wiki/Mastermind_(board_game))
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The idea of the project is to have the project state across a few components while highlighting the ability to access data and dispatch actions from nested components. This wireframe shows up to 4 levels of nesting where the plan is to access dat and dispatch actions from the lowest components in the tree.
 
-## Available Scripts
+![React Redux Project Wireframe](./wireframe.svg)
 
-In the project directory, you can run:
+A game starts with the creation of the `answer`, a random pattern of colors across four "pegs" (the board game uses pegs for the colors) and saved in the state. `round` is also in the state and set to 1.
 
-### `yarn start`
+The user must guess a color pattern by cycling each peg in the active `guess row component`. When the submit button is pressed feedback will be delivered to the neighboring `feedback row component`. 
+- The feedback peg is black if the associated guessed peg is the correct color and in the correct position. 
+- The feedback peg is white if the associated guessed peg is the correct color but in the wrong position.
+When the game ends, the answer will be revealed and a message will be revealed based on if the user guessed the pattern or used up all their rounds.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The proposed App structure:
+App Component
+|- Answer Component
+|- Guess Component
+|--- Guess Row x8
+|----- Guess Peg x4
+|- Feedback Component
+|--- Feedback Row x8
+|----- Feedback Peg x4
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+The proposed state:
+```
+state = {
+  answer = {1: color, 2: color, 3: color, 4: color}, // answer component
+  round = 1, // answer component
+  gameover: false, // answer component
+  guesses = { // guess component
+    // guesses[round][color]
+    1: {1: color, 2: color, 3: color, 4: color},
+    2: {1: color, 2: color, 3: color, 4: color},
+    3: {1: color, 2: color, 3: color, 4: color},
+    4: {1: color, 2: color, 3: color, 4: color},
+    5: {1: color, 2: color, 3: color, 4: color},
+    6: {1: color, 2: color, 3: color, 4: color},
+    7: {1: color, 2: color, 3: color, 4: color},
+    8: {1: color, 2: color, 3: color, 4: color},
+  },
+  feedback = { // feedback component
+    // feedback[round][color]
+    1: {1: color, 2: color, 3: color, 4: color},
+    2: {1: color, 2: color, 3: color, 4: color},
+    3: {1: color, 2: color, 3: color, 4: color},
+    4: {1: color, 2: color, 3: color, 4: color},
+    5: {1: color, 2: color, 3: color, 4: color},
+    6: {1: color, 2: color, 3: color, 4: color},
+    7: {1: color, 2: color, 3: color, 4: color},
+    8: {1: color, 2: color, 3: color, 4: color},
+  },
+}
+```
+Selectors:
+- Answer Component
+  - selectAnswer: used to decide feedback and to reveal pattern at the end of the game.
+  - selectRound: used to know which rows to "activate" and when the game ends.
+  - selectGameOver: used to display the answer and correct message.
+- Guess Component and Feedback Components have no selectors. The pegs will use inline selectors since they need to pass their location `[roundNumber][pegNumber]` to select the right data.
 
-### `yarn test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Actions dispatched:
+- From each guess peg, to cycle colors
+- The "Submit Guess" button to check guess
+- Feedback Component to, set feedback and advance round or signal correct answer (game over).
 
-### `yarn build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
